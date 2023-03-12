@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import './HealthBar.css'
-import { CombatContext } from '../App';
+import { CombatContext } from '../../App';
 
 
 function HealthBar({ startingHp, currentHp, idProp, index, sendMessage }) {

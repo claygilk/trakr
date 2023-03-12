@@ -19,6 +19,8 @@ const getCombat = async () => {
 
     console.log("combat retrieved from redis", combatState);
 
+    return combatState
+
 }
 
 const redisDemo = async () => {
@@ -39,7 +41,7 @@ const redisDemo = async () => {
   redisClient.quit();
 };
 
-
+exports.redisClient = redisClient
 exports.redisDemo = redisDemo
 exports.getCombat = getCombat
 exports.saveCombat = saveCombat
