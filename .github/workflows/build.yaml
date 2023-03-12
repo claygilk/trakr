@@ -58,7 +58,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.AEG_REGISTRY_TOKEN }}
+        password: ${{ secrets.clay-ci }}
 
     - name: Build and Push Container Image
       if: steps.semantic.outputs.new_release_published == 'true'
