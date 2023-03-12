@@ -16,27 +16,24 @@ const webSocketServer = new WebSocketServer({
 
 const clients = {}
 
-// const testData = [{startingHp: 10, currentHp:10, id: 1}, {startingHp: 15,currentHp:15,  id: 2}, {startingHp: 20,currentHp:20,  id: 3}]
-
-
-// let combatState = {
-//   healthBars: testData
-// }
-
-// saveCombat(combatState)
-
-async function initCombat(){
-  return getCombat()
-}
 
 webSocketServer.on('request', async function (req) {
+  //
+  // Create UUID for each connection
+  //
   var userID = crypto.randomUUID()
   console.log((new Date()) + "Recieved a new connection from " + req.origin)
 
+  //
+  // Add new connection to list of clients/connections
+  //
   const connection = req.accept(null, req.orgin)
   clients[userID] = connection
   console.log("connected: " + userID)
 
+  //
+  // Query Redis db to get state of combat
+  //
   let combatState 
   combatState = await redisClient.get('combat')
   combatState = JSON.parse(combatState)
@@ -48,7 +45,9 @@ webSocketServer.on('request', async function (req) {
     }
   }
 
-  // send current state
+  //
+  // Send current combat state to new client (or empty object if DB is empty)
+  //
   connection.sendUTF(JSON.stringify({
     type: "combatInitialize",
     updateState: combatState
@@ -56,14 +55,23 @@ webSocketServer.on('request', async function (req) {
 
   console.log("sending Initial data: ", combatState);
 
+  //
+  // Set up listner to respond to messages from client
+  //
   connection.on('message', (message) => {
     console.log("recieved update:", message.utf8Data);
     data = JSON.parse(message.utf8Data)
     combatState = data.updateState
 
+    //
+    // Save updated combat state from client to Redis
+    //
     saveCombat(combatState)
     console.log("New combat state recieved: ", combatState);
 
+    //
+    // Send updated state to every subscribed client
+    //
     for(key in clients){
       clients[key].sendUTF(message.utf8Data)
       console.log("sent message to all clients");
@@ -74,8 +82,4 @@ webSocketServer.on('request', async function (req) {
 
 webSocketServer.on('connect', (s) => {
   console.log("someone connected");
-})
-
-webSocketServer.on("combatUpdate", (test) => {
-  console.log("combat was updated");
 })

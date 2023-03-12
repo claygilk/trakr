@@ -1,8 +1,11 @@
 const Redis = require('ioredis');
 // import Redis from 'ioredis'
 
+let redisHost = process.env.REDIS_HOST
+console.log("redisHost: ", redisHost);
+
 const redisClient = new Redis({
-    host: '127.0.0.1',
+    host: redisHost,
     port: 6379,
 });
 
@@ -26,7 +29,7 @@ const getCombat = async () => {
 const redisDemo = async () => {
   // Connect to Redis at 127.0.0.1, port 6379.
   const redisClient = new Redis({
-    host: '127.0.0.1',
+    host: redisHost,
     port: 6379,
   });
 

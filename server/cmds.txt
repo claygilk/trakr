@@ -1,5 +1,12 @@
-p run -it --rm --name redis-server -p 6379:6379 docker.io/redis
+p run -it --rm -p 6379:6379 --name redis-server docker.io/redis
 
 p exec -it redis-server redis-cli
 
 127.0.0.1:6379> PUBLISH app:notifications  "message from Redis2"
+
+
+podman run -it --rm redis redis-server --save 60 1 --loglevel warning
+
+p run -e REDIS_HOST=192.168.1.250 --name server -it --rm -p 8000:8000 localhost/trackr-server:test
+
+p run --name ui -it --rm -p 8080:8080 localhost/trackr-ui:test
