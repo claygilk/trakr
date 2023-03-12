@@ -1,0 +1,10 @@
+{
+  "branches": [
+    "+([0-9])?(.{+([0-9]),x}).x",
+    "main"
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer"
+  ],
+  "repositoryUrl": "https://github.com/claygilk/trakr.git"
+}
